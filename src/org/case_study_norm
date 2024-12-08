@@ -1,0 +1,30 @@
+scope main {
+         // liquid and amount of the order request
+    norm n1: order(L, N)
+        -> obligation(unit_ag, n1, filling_process(L, N), `now` + `5 seconds`)
+        if fulfilled: s0(valve_ag, unit_ag)
+        else: s1(valve_ag), s2(valve_ag), s3(plant_ag, unit_ag), s4(plant_ag) .
+
+
+    // update the valve agent's image
+    sanction s0(A1, A2): factors(P, M)
+        -> obligation(A, true, update_image(A1, A2, P, M), `now`+ `2 seconds`) .
+
+
+    // adjust its flow rate estimation
+    sanction s1(A)
+        -> obligation(A, true, adjust_flow_rate(A), `now`+ `2 seconds`) .
+
+    // activate the valve's self cleaning routine
+    sanction s2(A)
+        -> obligation(A, true, self_cleaning(A), `now`+ `2 seconds`) .
+
+
+    // reduce the likelihood to select unit agent
+    sanction s3(A1, A2)
+        -> obligation(A1, true, reduce_likehood(A2), `now` + `2 seconds`) .
+
+    // plant agent removes unit agent and generate an alarm
+    sanction s4(A1, A2)
+        -> obligation(A1, true, remove(A2), `now` + `2 seconds`) .
+}
