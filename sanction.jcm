@@ -11,11 +11,16 @@ mas sanction_demo {
     }
 
     agent container {
-       join: plant
-       focus: valve
+        ag-arch: log.LoggerArch
+        ag-class: log.LoggerAg
+        join: plant
+        focus: valve
     }
 
-    agent bottle
+    agent bottle {
+        ag-arch: log.LoggerArch
+        ag-class: log.LoggerAg
+    }
 
     workspace plant {
         artifact valve: ValveArtifact(200)
