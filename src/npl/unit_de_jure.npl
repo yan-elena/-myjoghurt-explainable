@@ -1,0 +1,20 @@
+scope unit_de_jure {
+
+    // norm for filling a single bottle X with the liquid type LQ within the range MN-MX
+    norm n1: fill_bottle(LQ, X, MN, MX) & .my_name(U)
+        -> obligation(U, n1, fill(LQ, X, MN, MX), level(X, L) & (L<MN | L>MX)) .
+
+    // norm to update the factors once the bottle has been filled
+    norm n2: level(X, L) & .my_name(U)
+        // obligation to update the learning and deviation factors, unfulfilled if the magnitude is negative and the image is below the threshold
+        -> obligation(U, n2, update_factors(X, L), deviation_factor(X, "negative", _) & learning_factor(X, I, _, _, _) & threshold(T, _) & I < T)
+        if unfulfilled: s1(X), s2(X) .
+
+    // sanction s1: signal to the valve to adjust the estimated flow rate if the adjustment count is below the threshold
+    sanction-rule s1(X) : learning_factor(X, _, _, _, C) & threshold(_, T) & C < T & .my_name(U)
+        ->  sanction(U, adjust_flow_rate(X)) .
+
+    // sanction s2: signal to the valve to activate the self cleaning routine if the adjustment count is above the threshold
+    sanction-rule s2(X): learning_factor(X, _, _, _, C) & threshold(_, T) & C >= T & .my_name(U)
+        -> sanction(U, self_cleaning(X)) .
+}

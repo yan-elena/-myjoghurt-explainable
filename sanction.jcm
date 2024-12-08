@@ -1,5 +1,23 @@
 mas sanction_demo {
 
-    agent karlos
+    agent plant {
+        ag-class: npl.NormativeAg("src/npl/plant_norms.npl")
+    }
 
+    agent unit {
+        ag-class: npl.NormativeAg("src/npl/unit_norms.npl")
+        join: plant
+        focus: valve
+    }
+
+    agent container {
+       join: plant
+       focus: valve
+    }
+
+    agent bottle
+
+    workspace plant {
+        artifact valve: ValveArtifact(200)
+    }
 }
